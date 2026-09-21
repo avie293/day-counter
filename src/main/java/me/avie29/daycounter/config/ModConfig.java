@@ -2,7 +2,7 @@ package me.avie29.daycounter.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.fabricmc.loader.api.FabricLoader;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,7 +12,7 @@ import java.io.IOException;
 public class ModConfig {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final File CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("daycounter.json").toFile();
+    private static final File CONFIG_FILE = FMLPaths.CONFIGDIR.get().resolve("daycounter.json").toFile();
 
     public static boolean debugEnabled = false;
     public static boolean hudVisible = true;
@@ -31,7 +31,6 @@ public class ModConfig {
         }
 
         try (FileReader reader = new FileReader(CONFIG_FILE)) {
-            @SuppressWarnings("null")
             ConfigData data = GSON.fromJson(reader, ConfigData.class);
             if (data != null) {
                 debugEnabled = data.debugEnabled;
@@ -44,7 +43,7 @@ public class ModConfig {
                 hudScreenHeight = data.hudScreenHeight;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Unable to load Day Counter config: " + e.getMessage());
         }
     }
 
@@ -62,7 +61,7 @@ public class ModConfig {
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             GSON.toJson(data, writer);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Unable to save Day Counter config: " + e.getMessage());
         }
     }
 

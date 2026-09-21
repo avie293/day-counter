@@ -4,6 +4,7 @@ import me.avie29.daycounter.getDayCount;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.NonNull;
@@ -18,9 +19,15 @@ public class ConfigScreen extends Screen {
     private int dragOffsetY = 0;
     private boolean showVerticalGuide = false;
     private boolean showHorizontalGuide = false;
+    private final Screen parent;
 
     public ConfigScreen() {
+        this(null);
+    }
+
+    public ConfigScreen(Screen parent) {
         super(Component.translatable("screen.daycounter.config.title"));
+        this.parent = parent;
     }
 
     @Override
@@ -118,6 +125,11 @@ public class ConfigScreen extends Screen {
         Component hint2 = Component.translatable("screen.daycounter.config.hint_controls");
         guiGraphics.text(this.font, hint1, (this.width / 2) - (this.font.width(hint1) / 2), 20, 0xFFFFFFFF, true);
         guiGraphics.text(this.font, hint2, (this.width / 2) - (this.font.width(hint2) / 2), 32, 0xAAAAAAFF, true);
+
+        if (Minecraft.getInstance().level == null) {
+            Component preview = Component.translatable("screen.daycounter.config.preview");
+            guiGraphics.text(this.font, preview, (this.width / 2) - (this.font.width(preview) / 2), 48, 0xFFFF55FF, true);
+        }
 
         super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
     }
@@ -218,7 +230,7 @@ public class ConfigScreen extends Screen {
     @Override
     public void onClose() {
         ModConfig.save();
-        super.onClose();
+        Minecraft.getInstance().setScreenAndShow(this.parent);
     }
 
     @Override

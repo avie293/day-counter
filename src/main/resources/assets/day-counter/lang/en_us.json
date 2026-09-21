@@ -5,6 +5,7 @@
   "screen.daycounter.config.title": "Edit Day Counter Position",
   "screen.daycounter.config.hint_snap": "Drag: snaps to the grid, edges, and center.",
   "screen.daycounter.config.hint_controls": "Left mouse button to move - [ESC] to save",
+  "screen.daycounter.config.preview": "Preview mode - enter a world for the live HUD",
   "button.daycounter.reset_position": "Reset Position",
   "message.daycounter.debug_enabled": "\u00a7a[Day Counter] \u00a7fDebug mode \u00a7aenabled\u00a7f. Day output started in the console.",
   "message.daycounter.debug_disabled": "\u00a7a[Day Counter] \u00a7fDebug mode \u00a7cdisabled\u00a7f.",
