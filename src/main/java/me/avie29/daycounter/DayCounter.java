@@ -58,7 +58,7 @@ public class DayCounter implements ClientModInitializer {
                     .then(ClientCommands.literal("config")
                         .executes(context -> {
                             Minecraft.getInstance().execute(() -> {
-                                Minecraft.getInstance().setScreen(new ConfigScreen());
+                                Minecraft.getInstance().setScreenAndShow(new ConfigScreen());
                             });
                             return 1;
                         })
