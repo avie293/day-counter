@@ -21,6 +21,8 @@ public class ModConfig {
     public static boolean useCustomPosition = false;
     public static int hudX = 0;
     public static int hudY = 0;
+    public static int hudScreenWidth = 0;
+    public static int hudScreenHeight = 0;
 
     public static void load() {
         if (!CONFIG_FILE.exists()) {
@@ -38,6 +40,8 @@ public class ModConfig {
                 useCustomPosition = data.useCustomPosition;
                 hudX = data.hudX;
                 hudY = data.hudY;
+                hudScreenWidth = data.hudScreenWidth;
+                hudScreenHeight = data.hudScreenHeight;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,6 +56,8 @@ public class ModConfig {
         data.useCustomPosition = useCustomPosition;
         data.hudX = hudX;
         data.hudY = hudY;
+        data.hudScreenWidth = hudScreenWidth;
+        data.hudScreenHeight = hudScreenHeight;
 
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             GSON.toJson(data, writer);
@@ -67,5 +73,7 @@ public class ModConfig {
         boolean useCustomPosition = false;
         int hudX = 0;
         int hudY = 0;
+        int hudScreenWidth = 0;
+        int hudScreenHeight = 0;
     }
 }

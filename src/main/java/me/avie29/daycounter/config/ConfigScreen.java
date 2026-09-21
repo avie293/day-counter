@@ -25,6 +25,17 @@ public class ConfigScreen extends Screen {
 
     @Override
     protected void init() {
+        if (ModConfig.useCustomPosition
+            && ModConfig.hudScreenWidth > 0
+            && ModConfig.hudScreenHeight > 0
+            && (ModConfig.hudScreenWidth != this.width || ModConfig.hudScreenHeight != this.height)) {
+            ModConfig.hudX = Math.round((float) ModConfig.hudX * this.width / ModConfig.hudScreenWidth);
+            ModConfig.hudY = Math.round((float) ModConfig.hudY * this.height / ModConfig.hudScreenHeight);
+        }
+
+        ModConfig.hudScreenWidth = this.width;
+        ModConfig.hudScreenHeight = this.height;
+
         if (!ModConfig.useCustomPosition) {
             setDefaultPosition();
             ModConfig.useCustomPosition = true;
@@ -69,16 +80,7 @@ public class ConfigScreen extends Screen {
         int boxHeight = textHeight + (paddingY * 2) + 1;
 
         if (this.isDragging) {
-            int rawX = mouseX - this.dragOffsetX;
-            int rawY = mouseY - this.dragOffsetY;
-            int maxX = this.width - boxWidth;
-            int maxY = this.height - boxHeight;
-
-            ModConfig.hudX = snapCoordinate(rawX, maxX, (this.width - boxWidth) / 2, true);
-            ModConfig.hudY = snapCoordinate(rawY, maxY, (this.height - boxHeight) / 2, false);
-
-            ModConfig.hudX = Math.max(0, Math.min(ModConfig.hudX, this.width - boxWidth));
-            ModConfig.hudY = Math.max(0, Math.min(ModConfig.hudY, this.height - boxHeight));
+            updateHudPosition(mouseX, mouseY, boxWidth, boxHeight);
         } else {
             this.showVerticalGuide = false;
             this.showHorizontalGuide = false;
@@ -148,9 +150,22 @@ public class ConfigScreen extends Screen {
         return Math.max(0, Math.min(snappedValue, max));
     }
 
+    private void updateHudPosition(int mouseX, int mouseY, int boxWidth, int boxHeight) {
+        int rawX = mouseX - this.dragOffsetX;
+        int rawY = mouseY - this.dragOffsetY;
+        int maxX = this.width - boxWidth;
+        int maxY = this.height - boxHeight;
+
+        ModConfig.hudX = snapCoordinate(rawX, maxX, (this.width - boxWidth) / 2, true);
+        ModConfig.hudY = snapCoordinate(rawY, maxY, (this.height - boxHeight) / 2, false);
+
+        ModConfig.hudX = Math.max(0, Math.min(ModConfig.hudX, this.width - boxWidth));
+        ModConfig.hudY = Math.max(0, Math.min(ModConfig.hudY, this.height - boxHeight));
+    }
+
     @Override
     public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() == 0) {
+        if (event.button() == 1) {
             Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
             int boxWidth = this.font.width(text) + 12;
             int boxHeight = this.font.lineHeight + 9;
@@ -159,6 +174,7 @@ public class ConfigScreen extends Screen {
                 event.y() >= ModConfig.hudY && event.y() <= ModConfig.hudY + boxHeight) {
 
                 this.isDragging = true;
+                this.setDragging(true);
                 this.dragOffsetX = (int) event.x() - ModConfig.hudX;
                 this.dragOffsetY = (int) event.y() - ModConfig.hudY;
                 return true;
@@ -168,9 +184,33 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
+    public boolean mouseDragged(@NonNull MouseButtonEvent event, double dragX, double dragY) {
+        if (this.isDragging) {
+            Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
+            int boxWidth = this.font.width(text) + 12;
+            int boxHeight = this.font.lineHeight + 9;
+            updateHudPosition((int) event.x(), (int) event.y(), boxWidth, boxHeight);
+            return true;
+        }
+        return super.mouseDragged(event, dragX, dragY);
+    }
+
+    @Override
+    public void mouseMoved(double mouseX, double mouseY) {
+        if (this.isDragging) {
+            Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
+            int boxWidth = this.font.width(text) + 12;
+            int boxHeight = this.font.lineHeight + 9;
+            updateHudPosition((int) mouseX, (int) mouseY, boxWidth, boxHeight);
+        }
+        super.mouseMoved(mouseX, mouseY);
+    }
+
+    @Override
     public boolean mouseReleased(@NonNull MouseButtonEvent event) {
-        if (event.button() == 0) {
+        if (event.button() == 1) {
             this.isDragging = false;
+            this.setDragging(false);
         }
         return super.mouseReleased(event);
     }
