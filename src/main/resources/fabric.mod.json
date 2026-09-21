@@ -1,0 +1,29 @@
+{
+	"schemaVersion": 1,
+	"id": "day-counter",
+	"version": "${version}",
+	"name": "Day Counter",
+	"description": "",
+	"authors": [
+		"Avie29"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/datapack/avies-day-counter",
+		"sources": ""
+	},
+	"license": "CC-BY-NC-4.0",
+	"icon": "assets/day-counter/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"me.avie29.daycounter.DayCounter"
+		]
+	},
+	"mixins": [],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.1",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

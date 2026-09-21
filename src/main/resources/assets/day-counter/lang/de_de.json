@@ -1,0 +1,19 @@
+{
+  "hud.day": "Tag %s",
+  "key.daycounter.toggle_hud": "Day-Counter-HUD umschalten",
+  "category.daycounter.general": "Day Counter",
+  "screen.daycounter.config.title": "Day-Counter-Position bearbeiten",
+  "screen.daycounter.config.hint_snap": "Ziehen: Raster, Kanten und Mitte rasten automatisch ein.",
+  "screen.daycounter.config.hint_controls": "Linke Maustaste zum Verschieben - [ESC] zum Speichern",
+  "button.daycounter.reset_position": "Position zurücksetzen",
+  "message.daycounter.debug_enabled": "\u00a7a[Day Counter] \u00a7fDebug-Modus \u00a7aaktiviert\u00a7f. Die Tagesausgabe wurde in der Konsole gestartet.",
+  "message.daycounter.debug_disabled": "\u00a7a[Day Counter] \u00a7fDebug-Modus \u00a7cdeaktiviert\u00a7f.",
+  "message.daycounter.background_enabled": "\u00a7a[Day Counter] \u00a7fHintergrund \u00a7aaktiviert\u00a7f.",
+  "message.daycounter.background_disabled": "\u00a7a[Day Counter] \u00a7fHintergrund \u00a7cdeaktiviert\u00a7f.",
+  "message.daycounter.hud_enabled": "\u00a7aDay-Counter-HUD: Aktiviert",
+  "message.daycounter.hud_disabled": "\u00a7cDay-Counter-HUD: Deaktiviert",
+  "message.daycounter.help_title": "\u00a7a[Day Counter] \u00a7fVerfügbare Befehle:",
+  "message.daycounter.help_config": "\u00a7e/dc config \u00a7f- Öffnet den Editor für die HUD-Position.",
+  "message.daycounter.help_bgtoggle": "\u00a7e/dc bgtoggle \u00a7f- Schaltet den HUD-Hintergrund um.",
+  "message.daycounter.help_debug": "\u00a7e/dc debug \u00a7f- Schaltet die Debug-Ausgabe in der Konsole um."
+}
