@@ -4,7 +4,7 @@ import me.avie29.daycounter.config.ModConfig;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 
 public class KeyBindings {
 
@@ -12,9 +12,9 @@ public class KeyBindings {
 
     public static void register(RegisterKeyMappingsEvent event) {
         toggleHudKey = new KeyMapping(
-            "key.daycounter.toggle_hud",
+            "key.day_counter.toggle_hud",
             72,
-            KeyMapping.Category.MISC
+            KeyMapping.CATEGORY_MISC
         );
         event.register(toggleHudKey);
     }
@@ -28,8 +28,8 @@ public class KeyBindings {
 
                         player.sendSystemMessage(
                         Component.translatable(ModConfig.hudVisible
-                            ? "message.daycounter.hud_enabled"
-                            : "message.daycounter.hud_disabled")
+                            ? "day_counter.message.hud_enabled"
+                            : "day_counter.message.hud_disabled")
                     );
                 }
         }

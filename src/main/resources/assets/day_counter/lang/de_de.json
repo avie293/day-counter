@@ -1,0 +1,20 @@
+{
+  "day_counter.hud.day": "Tag %s",
+  "key.day_counter.toggle_hud": "Day-Counter-HUD umschalten",
+  "category.day_counter.general": "Day Counter",
+  "day_counter.screen.config.title": "Day-Counter-Position bearbeiten",
+  "day_counter.screen.config.hint_snap": "Ziehen: Raster, Kanten und Mitte rasten automatisch ein.",
+  "day_counter.screen.config.hint_controls": "Linke Maustaste zum Verschieben - [ESC] zum Speichern",
+  "day_counter.screen.config.preview": "Vorschau-Modus - betrete eine Welt für das Live-HUD",
+  "day_counter.button.reset_position": "Position zurücksetzen",
+  "day_counter.message.debug_enabled": "\u00a7a[Day Counter] \u00a7fDebug-Modus \u00a7aaktiviert\u00a7f. Die Tagesausgabe wurde in der Konsole gestartet.",
+  "day_counter.message.debug_disabled": "\u00a7a[Day Counter] \u00a7fDebug-Modus \u00a7cdeaktiviert\u00a7f.",
+  "day_counter.message.background_enabled": "\u00a7a[Day Counter] \u00a7fHintergrund \u00a7aaktiviert\u00a7f.",
+  "day_counter.message.background_disabled": "\u00a7a[Day Counter] \u00a7fHintergrund \u00a7cdeaktiviert\u00a7f.",
+  "day_counter.message.hud_enabled": "\u00a7aDay-Counter-HUD: Aktiviert",
+  "day_counter.message.hud_disabled": "\u00a7cDay-Counter-HUD: Deaktiviert",
+  "day_counter.message.help_title": "\u00a7a[Day Counter] \u00a7fVerfügbare Befehle:",
+  "day_counter.message.help_config": "\u00a7e/dc config \u00a7f- Öffnet den Editor für die HUD-Position.",
+  "day_counter.message.help_bgtoggle": "\u00a7e/dc bgtoggle \u00a7f- Schaltet den HUD-Hintergrund um.",
+  "day_counter.message.help_debug": "\u00a7e/dc debug \u00a7f- Schaltet die Debug-Ausgabe in der Konsole um."
+}

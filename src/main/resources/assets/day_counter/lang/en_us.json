@@ -1,0 +1,20 @@
+{
+  "day_counter.hud.day": "Day %s",
+  "key.day_counter.toggle_hud": "Toggle Day Counter HUD",
+  "category.day_counter.general": "Day Counter",
+  "day_counter.screen.config.title": "Edit Day Counter Position",
+  "day_counter.screen.config.hint_snap": "Drag: snaps to the grid, edges, and center.",
+  "day_counter.screen.config.hint_controls": "Left mouse button to move - [ESC] to save",
+  "day_counter.screen.config.preview": "Preview mode - enter a world for the live HUD",
+  "day_counter.button.reset_position": "Reset Position",
+  "day_counter.message.debug_enabled": "\u00a7a[Day Counter] \u00a7fDebug mode \u00a7aenabled\u00a7f. Day output started in the console.",
+  "day_counter.message.debug_disabled": "\u00a7a[Day Counter] \u00a7fDebug mode \u00a7cdisabled\u00a7f.",
+  "day_counter.message.background_enabled": "\u00a7a[Day Counter] \u00a7fBackground \u00a7aenabled\u00a7f.",
+  "day_counter.message.background_disabled": "\u00a7a[Day Counter] \u00a7fBackground \u00a7cdisabled\u00a7f.",
+  "day_counter.message.hud_enabled": "\u00a7aDay Counter HUD: Enabled",
+  "day_counter.message.hud_disabled": "\u00a7cDay Counter HUD: Disabled",
+  "day_counter.message.help_title": "\u00a7a[Day Counter] \u00a7fAvailable commands:",
+  "day_counter.message.help_config": "\u00a7e/dc config \u00a7f- Open the HUD position editor.",
+  "day_counter.message.help_bgtoggle": "\u00a7e/dc bgtoggle \u00a7f- Toggle the HUD background.",
+  "day_counter.message.help_debug": "\u00a7e/dc debug \u00a7f- Toggle debug output in the console."
+}

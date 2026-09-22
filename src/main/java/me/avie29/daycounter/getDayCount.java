@@ -13,7 +13,7 @@ public class getDayCount {
             return 0;
         }
 
-        long time = player.level().getOverworldClockTime();
+        long time = player.level().getDayTime();
         long day = time / 24000L;
 
         return Math.max(0, day);
