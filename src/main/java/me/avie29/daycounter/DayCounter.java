@@ -1,11 +1,17 @@
 package me.avie29.daycounter;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.commands.Commands;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,40 +20,50 @@ import me.avie29.daycounter.config.ModConfig;
 import me.avie29.daycounter.hud.HUD;
 import me.avie29.daycounter.hud.KeyBindings;
 import net.minecraft.resources.Identifier;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 
-public class DayCounter implements ClientModInitializer {
+@Mod(value = DayCounter.MOD_ID, dist = Dist.CLIENT)
+public class DayCounter {
 
-    public static final String MOD_ID = "day-counter";
+    public static final String MOD_ID = "day_counter";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     public static boolean debugMode = false;
     private int tickCounter = 0;
 
-    @Override
-    public void onInitializeClient() {
+    public DayCounter(IEventBus modEventBus) {
+        modEventBus.addListener(this::registerKeyMappings);
+        modEventBus.addListener(this::registerHud);
+        NeoForge.EVENT_BUS.addListener(this::registerClientCommands);
+        NeoForge.EVENT_BUS.addListener(this::onClientTick);
 
         ModConfig.load();
-        KeyBindings.register();
+    }
 
-            HudElementRegistry.addLast(
-                Identifier.fromNamespaceAndPath(DayCounter.MOD_ID, "day_hud"),
-                HUD::render
-            );
+    private void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        KeyBindings.register(event);
+    }
 
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register(
-                ClientCommands.literal("dc")
-                    .then(ClientCommands.literal("debug")
+    private void registerHud(RegisterGuiLayersEvent event) {
+        event.registerAboveAll(
+            Identifier.fromNamespaceAndPath(MOD_ID, "day_hud"),
+            HUD::render
+        );
+    }
+
+    @SubscribeEvent
+    private void registerClientCommands(RegisterClientCommandsEvent event) {
+        event.getDispatcher().register(
+            Commands.literal("dc")
+                    .then(Commands.literal("debug")
                         .executes(context -> {
                             ModConfig.debugEnabled = !ModConfig.debugEnabled;
                             ModConfig.save();
 
                         if (ModConfig.debugEnabled) {
-                            context.getSource().sendFeedback(
+                            context.getSource().sendSystemMessage(
                                 Component.translatable("message.daycounter.debug_enabled")
                             );
                         } else {
-                            context.getSource().sendFeedback(
+                            context.getSource().sendSystemMessage(
                                 Component.translatable("message.daycounter.debug_disabled")
                             );
                         }
@@ -55,7 +71,7 @@ public class DayCounter implements ClientModInitializer {
                             return 1;
                         })
                     )
-                    .then(ClientCommands.literal("config")
+                    .then(Commands.literal("config")
                         .executes(context -> {
                             Minecraft.getInstance().execute(() -> {
                                 Minecraft.getInstance().setScreen(new ConfigScreen());
@@ -63,11 +79,11 @@ public class DayCounter implements ClientModInitializer {
                             return 1;
                         })
                     )
-                    .then(ClientCommands.literal("bgtoggle")
+                    .then(Commands.literal("bgtoggle")
                         .executes(context -> {
                             ModConfig.backgroundVisible = !ModConfig.backgroundVisible;
                             ModConfig.save();
-                            context.getSource().sendFeedback(
+                            context.getSource().sendSystemMessage(
                                 Component.translatable(ModConfig.backgroundVisible
                                     ? "message.daycounter.background_enabled"
                                     : "message.daycounter.background_disabled")
@@ -75,32 +91,33 @@ public class DayCounter implements ClientModInitializer {
                             return 1;
                         })
                     )
-                    .then(ClientCommands.literal("help")
+                    .then(Commands.literal("help")
                         .executes(context -> {
-                            context.getSource().sendFeedback(Component.translatable("message.daycounter.help_title"));
-                            context.getSource().sendFeedback(Component.translatable("message.daycounter.help_config"));
-                            context.getSource().sendFeedback(Component.translatable("message.daycounter.help_bgtoggle"));
-                            context.getSource().sendFeedback(Component.translatable("message.daycounter.help_debug"));
+                            context.getSource().sendSystemMessage(Component.translatable("message.daycounter.help_title"));
+                            context.getSource().sendSystemMessage(Component.translatable("message.daycounter.help_config"));
+                            context.getSource().sendSystemMessage(Component.translatable("message.daycounter.help_bgtoggle"));
+                            context.getSource().sendSystemMessage(Component.translatable("message.daycounter.help_debug"));
                             return 1;
                         })
                     )
-            );
-        });
+        );
+    }
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.level == null || client.player == null) {
+    @SubscribeEvent
+    private void onClientTick(ClientTickEvent.Post event) {
+        Minecraft client = Minecraft.getInstance();
+        if (client.level == null || client.player == null) {
                 return;
-            }
+        }
 
-            if (ModConfig.debugEnabled) {
-               tickCounter++;
+        if (ModConfig.debugEnabled) {
+            tickCounter++;
 
-               if (tickCounter >= 100) {
-                   tickCounter = 0;
-                   logDebugInfo(client);
-                }
+            if (tickCounter >= 100) {
+                tickCounter = 0;
+                logDebugInfo(client);
             }
-        });
+        }
     }
 
     private void logDebugInfo(Minecraft client) {
