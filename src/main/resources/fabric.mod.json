@@ -3,7 +3,7 @@
 	"id": "day-counter",
 	"version": "${version}",
 	"name": "Day Counter",
-	"description": "",
+	"description": "Displays the current Minecraft day in a configurable HUD.",
 	"authors": [
 		"Avie29"
 	],
