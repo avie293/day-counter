@@ -1,12 +1,10 @@
 package me.avie29.daycounter.config;
 
 import me.avie29.daycounter.getDayCount;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.NonNull;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
 
 public class ConfigScreen extends Screen {
 
@@ -20,7 +18,7 @@ public class ConfigScreen extends Screen {
     private boolean showHorizontalGuide = false;
 
     public ConfigScreen() {
-        super(Component.translatable("screen.daycounter.config.title"));
+        super(Text.translatable("screen.daycounter.config.title"));
     }
 
     @Override
@@ -31,20 +29,20 @@ public class ConfigScreen extends Screen {
         }
 
         int buttonWidth = 140;
-        this.addRenderableWidget(
-            Button.builder(
-                Component.translatable("button.daycounter.reset_position"),
+        this.addDrawableChild(
+            ButtonWidget.builder(
+                Text.translatable("button.daycounter.reset_position"),
                 button -> resetPosition()
             )
-            .bounds((this.width - buttonWidth) / 2, this.height - 30, buttonWidth, 20)
+            .dimensions((this.width - buttonWidth) / 2, this.height - 30, buttonWidth, 20)
             .build()
         );
 
     }
 
     private void setDefaultPosition() {
-        Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
-        int boxWidth = this.font.width(text) + 12;
+        Text text = Text.translatable("hud.day", getDayCount.getCurrentDay());
+        int boxWidth = this.textRenderer.getWidth(text) + 12;
 
         ModConfig.hudX = (this.width / 2) - (boxWidth / 2);
         ModConfig.hudY = this.height - 68;
@@ -60,12 +58,17 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(@NonNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
-        this.extractBackground(guiGraphics, mouseX, mouseY, partialTick);
+    public void renderBackground(DrawContext drawContext, int mouseX, int mouseY, float partialTick) {
+        drawContext.fill(0, 0, this.width, this.height, 0x90000000);
+    }
 
-        Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
-        int textWidth = this.font.width(text);
-        int textHeight = this.font.lineHeight;
+    @Override
+    public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTick) {
+        super.render(drawContext, mouseX, mouseY, partialTick);
+
+        Text text = Text.translatable("hud.day", getDayCount.getCurrentDay());
+        int textWidth = this.textRenderer.getWidth(text);
+        int textHeight = this.textRenderer.fontHeight;
         int paddingX = 6;
         int paddingY = 4;
         int boxWidth = textWidth + (paddingX * 2);
@@ -95,34 +98,33 @@ public class ConfigScreen extends Screen {
         if (this.isDragging) {
             if (this.showVerticalGuide) {
                 int guideX = x + (boxWidth / 2);
-                guiGraphics.fill(guideX, 0, guideX + 1, this.height, 0x8033CCFF);
+                drawContext.fill(guideX, 0, guideX + 1, this.height, 0x8033CCFF);
             }
 
             if (this.showHorizontalGuide) {
                 int guideY = y + (boxHeight / 2);
-                guiGraphics.fill(0, guideY, this.width, guideY + 1, 0x8033CCFF);
+                drawContext.fill(0, guideY, this.width, guideY + 1, 0x8033CCFF);
             }
         }
 
         if (ModConfig.backgroundVisible) {
-            guiGraphics.fill(x + 1, y, x + boxWidth - 1, y + 1, 0x90000000);
-            guiGraphics.fill(x, y + 1, x + boxWidth, y + boxHeight - 1, 0x90000000);
-            guiGraphics.fill(x + 1, y + boxHeight - 1, x + boxWidth - 1, y + boxHeight, 0x90000000);
+            drawContext.fill(x + 1, y, x + boxWidth - 1, y + 1, 0x90000000);
+            drawContext.fill(x, y + 1, x + boxWidth, y + boxHeight - 1, 0x90000000);
+            drawContext.fill(x + 1, y + boxHeight - 1, x + boxWidth - 1, y + boxHeight, 0x90000000);
         }
 
-        guiGraphics.fill(x + 1, y, x + boxWidth - 1, y + 1, 0xFFFFFF00);
-        guiGraphics.fill(x + 1, y + boxHeight - 1, x + boxWidth - 1, y + boxHeight, 0xFFFFFF00);
-        guiGraphics.fill(x, y + 1, x + 1, y + boxHeight - 1, 0xFFFFFF00);
-        guiGraphics.fill(x + boxWidth - 1, y + 1, x + boxWidth, y + boxHeight - 1, 0xFFFFFF00);
+        drawContext.fill(x + 1, y, x + boxWidth - 1, y + 1, 0xFFFFFF00);
+        drawContext.fill(x + 1, y + boxHeight - 1, x + boxWidth - 1, y + boxHeight, 0xFFFFFF00);
+        drawContext.fill(x, y + 1, x + 1, y + boxHeight - 1, 0xFFFFFF00);
+        drawContext.fill(x + boxWidth - 1, y + 1, x + boxWidth, y + boxHeight - 1, 0xFFFFFF00);
 
-        guiGraphics.text(this.font, text, x + paddingX, y + paddingY + 1, 0xFFFFFFFF, true);
+        drawContext.drawTextWithShadow(this.textRenderer, text, x + paddingX, y + paddingY + 1, 0xFFFFFFFF);
 
-        Component hint1 = Component.translatable("screen.daycounter.config.hint_snap");
-        Component hint2 = Component.translatable("screen.daycounter.config.hint_controls");
-        guiGraphics.text(this.font, hint1, (this.width / 2) - (this.font.width(hint1) / 2), 20, 0xFFFFFFFF, true);
-        guiGraphics.text(this.font, hint2, (this.width / 2) - (this.font.width(hint2) / 2), 32, 0xAAAAAAFF, true);
+        Text hint1 = Text.translatable("screen.daycounter.config.hint_snap");
+        Text hint2 = Text.translatable("screen.daycounter.config.hint_controls");
+        drawContext.drawTextWithShadow(this.textRenderer, hint1, (this.width / 2) - (this.textRenderer.getWidth(hint1) / 2), 20, 0xFFFFFFFF);
+        drawContext.drawTextWithShadow(this.textRenderer, hint2, (this.width / 2) - (this.textRenderer.getWidth(hint2) / 2), 32, 0xAAAAAAFF);
 
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     private int snapCoordinate(int value, int max, int center, boolean vertical) {
@@ -154,49 +156,44 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() == 0) {
-            Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
-            int boxWidth = this.font.width(text) + 12;
-            int boxHeight = this.font.lineHeight + 9;
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            Text text = Text.translatable("hud.day", getDayCount.getCurrentDay());
+            int boxWidth = this.textRenderer.getWidth(text) + 12;
+            int boxHeight = this.textRenderer.fontHeight + 9;
 
-            if (event.x() >= ModConfig.hudX && event.x() <= ModConfig.hudX + boxWidth &&
-                event.y() >= ModConfig.hudY && event.y() <= ModConfig.hudY + boxHeight) {
+            if (mouseX >= ModConfig.hudX && mouseX <= ModConfig.hudX + boxWidth &&
+                mouseY >= ModConfig.hudY && mouseY <= ModConfig.hudY + boxHeight) {
 
                 this.isDragging = true;
-                this.dragOffsetX = (int) event.x() - ModConfig.hudX;
-                this.dragOffsetY = (int) event.y() - ModConfig.hudY;
+                this.dragOffsetX = (int) mouseX - ModConfig.hudX;
+                this.dragOffsetY = (int) mouseY - ModConfig.hudY;
                 return true;
             }
         }
-        return super.mouseClicked(event, doubleClick);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean mouseReleased(@NonNull MouseButtonEvent event) {
-        if (event.button() == 0) {
-            Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
-            int boxWidth = this.font.width(text) + 12;
-            int boxHeight = this.font.lineHeight + 9;
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            Text text = Text.translatable("hud.day", getDayCount.getCurrentDay());
+            int boxWidth = this.textRenderer.getWidth(text) + 12;
+            int boxHeight = this.textRenderer.fontHeight + 9;
             ModConfig.rememberAnchor(this.width, this.height, boxWidth, boxHeight);
             this.isDragging = false;
         }
-        return super.mouseReleased(event);
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
-    public void onClose() {
+    public void close() {
         ModConfig.save();
-        super.onClose();
+        super.close();
     }
 
     @Override
-    public boolean isPauseScreen() {
+    public boolean shouldPause() {
         return false;
-    }
-
-    @Override
-    public boolean isInGameUi() {
-        return true;
     }
 }
