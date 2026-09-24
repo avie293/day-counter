@@ -29,6 +29,10 @@ public class ConfigScreen extends Screen {
             setDefaultPosition();
             ModConfig.useCustomPosition = true;
         }
+        ModConfig.migrateLegacyPosition(
+            Math.max(0, this.width - getBoxWidth()),
+            Math.max(0, this.height - getBoxHeight())
+        );
 
         int buttonWidth = 140;
         this.addRenderableWidget(
@@ -43,11 +47,20 @@ public class ConfigScreen extends Screen {
     }
 
     private void setDefaultPosition() {
-        Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
-        int boxWidth = this.font.width(text) + 12;
+        int boxWidth = getBoxWidth();
+        int boxHeight = getBoxHeight();
+        int maxX = Math.max(0, this.width - boxWidth);
+        int maxY = Math.max(0, this.height - boxHeight);
+        ModConfig.updatePosition(maxX / 2, Math.max(0, this.height - 68), maxX, maxY);
+    }
 
-        ModConfig.hudX = (this.width / 2) - (boxWidth / 2);
-        ModConfig.hudY = this.height - 68;
+    private int getBoxWidth() {
+        Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
+        return this.font.width(text) + 12;
+    }
+
+    private int getBoxHeight() {
+        return this.font.lineHeight + 9;
     }
 
     private void resetPosition() {
@@ -74,18 +87,16 @@ public class ConfigScreen extends Screen {
             int maxX = this.width - boxWidth;
             int maxY = this.height - boxHeight;
 
-            ModConfig.hudX = snapCoordinate(rawX, maxX, (this.width - boxWidth) / 2, true);
-            ModConfig.hudY = snapCoordinate(rawY, maxY, (this.height - boxHeight) / 2, false);
-
-            ModConfig.hudX = Math.max(0, Math.min(ModConfig.hudX, this.width - boxWidth));
-            ModConfig.hudY = Math.max(0, Math.min(ModConfig.hudY, this.height - boxHeight));
+            int snappedX = snapCoordinate(rawX, maxX, (this.width - boxWidth) / 2, true);
+            int snappedY = snapCoordinate(rawY, maxY, (this.height - boxHeight) / 2, false);
+            ModConfig.updatePosition(snappedX, snappedY, maxX, maxY);
         } else {
             this.showVerticalGuide = false;
             this.showHorizontalGuide = false;
         }
 
-        int x = ModConfig.hudX;
-        int y = ModConfig.hudY;
+        int x = ModConfig.getHudX(Math.max(0, this.width - boxWidth));
+        int y = ModConfig.getHudY(Math.max(0, this.height - boxHeight));
 
         if (this.isDragging) {
             if (this.showVerticalGuide) {
@@ -152,15 +163,17 @@ public class ConfigScreen extends Screen {
     public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean doubleClick) {
         if (event.button() == 0) {
             Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
-            int boxWidth = this.font.width(text) + 12;
-            int boxHeight = this.font.lineHeight + 9;
+            int boxWidth = getBoxWidth();
+            int boxHeight = getBoxHeight();
+            int x = ModConfig.getHudX(Math.max(0, this.width - boxWidth));
+            int y = ModConfig.getHudY(Math.max(0, this.height - boxHeight));
 
-            if (event.x() >= ModConfig.hudX && event.x() <= ModConfig.hudX + boxWidth &&
-                event.y() >= ModConfig.hudY && event.y() <= ModConfig.hudY + boxHeight) {
+            if (event.x() >= x && event.x() <= x + boxWidth &&
+                event.y() >= y && event.y() <= y + boxHeight) {
 
                 this.isDragging = true;
-                this.dragOffsetX = (int) event.x() - ModConfig.hudX;
-                this.dragOffsetY = (int) event.y() - ModConfig.hudY;
+                this.dragOffsetX = (int) event.x() - x;
+                this.dragOffsetY = (int) event.y() - y;
                 return true;
             }
         }

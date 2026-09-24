@@ -21,6 +21,42 @@ public class ModConfig {
     public static boolean useCustomPosition = false;
     public static int hudX = 0;
     public static int hudY = 0;
+    public static float hudXRatio = 0.5f;
+    public static float hudYRatio = 1.0f;
+    public static boolean positionScaleAware = false;
+
+    public static void updatePosition(int x, int y, int maxX, int maxY) {
+        hudX = Math.max(0, Math.min(x, maxX));
+        hudY = Math.max(0, Math.min(y, maxY));
+        hudXRatio = ratio(hudX, maxX);
+        hudYRatio = ratio(hudY, maxY);
+        positionScaleAware = true;
+    }
+
+    public static int getHudX(int maxX) {
+        return Math.round(clampRatio(hudXRatio) * Math.max(0, maxX));
+    }
+
+    public static int getHudY(int maxY) {
+        return Math.round(clampRatio(hudYRatio) * Math.max(0, maxY));
+    }
+
+    public static void migrateLegacyPosition(int maxX, int maxY) {
+        if (!positionScaleAware) {
+            hudXRatio = ratio(hudX, maxX);
+            hudYRatio = ratio(hudY, maxY);
+            positionScaleAware = true;
+            save();
+        }
+    }
+
+    private static float ratio(int value, int max) {
+        return max <= 0 ? 0.0f : clampRatio((float) value / max);
+    }
+
+    private static float clampRatio(float value) {
+        return Math.max(0.0f, Math.min(value, 1.0f));
+    }
 
     public static void load() {
         if (!CONFIG_FILE.exists()) {
@@ -38,6 +74,9 @@ public class ModConfig {
                 useCustomPosition = data.useCustomPosition;
                 hudX = data.hudX;
                 hudY = data.hudY;
+                hudXRatio = data.hudXRatio;
+                hudYRatio = data.hudYRatio;
+                positionScaleAware = data.positionScaleAware;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,6 +91,9 @@ public class ModConfig {
         data.useCustomPosition = useCustomPosition;
         data.hudX = hudX;
         data.hudY = hudY;
+        data.hudXRatio = hudXRatio;
+        data.hudYRatio = hudYRatio;
+        data.positionScaleAware = positionScaleAware;
 
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             GSON.toJson(data, writer);
@@ -67,5 +109,8 @@ public class ModConfig {
         boolean useCustomPosition = false;
         int hudX = 0;
         int hudY = 0;
+        float hudXRatio = 0.5f;
+        float hudYRatio = 1.0f;
+        boolean positionScaleAware = false;
     }
 }
