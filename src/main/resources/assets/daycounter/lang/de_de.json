@@ -15,5 +15,5 @@
   "message.daycounter.help_title": "\u00a7a[Day Counter] \u00a7fVerfügbare Befehle:",
   "message.daycounter.help_config": "\u00a7e/dc config \u00a7f- Öffnet den Editor für die HUD-Position.",
   "message.daycounter.help_bgtoggle": "\u00a7e/dc bgtoggle \u00a7f- Schaltet den HUD-Hintergrund um.",
-  "message.daycounter.help_debug": "\u00a7e/dc debug \u00a7f- Schaltet die Debug-Ausgabe in der Konsole um."
+  "message.daycounter.help_debug": "\u00a7e/dc debug \u00a7f- Schaltet die Debug-Ausgabe im Console um."
 }

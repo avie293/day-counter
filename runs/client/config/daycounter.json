@@ -1,0 +1,15 @@
+{
+  "debugEnabled": false,
+  "hudVisible": true,
+  "backgroundVisible": true,
+  "useCustomPosition": true,
+  "hudX": 220,
+  "hudY": 200,
+  "hudScreenWidth": 480,
+  "hudScreenHeight": 270,
+  "hudAnchorX": 1,
+  "hudAnchorY": 2,
+  "hudOffsetX": 0,
+  "hudOffsetY": -52,
+  "hudAnchorInitialized": true
+}

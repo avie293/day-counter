@@ -1,10 +1,10 @@
 package me.avie29.daycounter.config;
 
 import me.avie29.daycounter.getDayCount;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class ConfigScreen extends Screen {
 
@@ -18,7 +18,7 @@ public class ConfigScreen extends Screen {
     private boolean showHorizontalGuide = false;
 
     public ConfigScreen() {
-        super(Text.translatable("screen.daycounter.config.title"));
+        super(Component.translatable("screen.daycounter.config.title"));
     }
 
     @Override
@@ -29,20 +29,20 @@ public class ConfigScreen extends Screen {
         }
 
         int buttonWidth = 140;
-        this.addDrawableChild(
-            ButtonWidget.builder(
-                Text.translatable("button.daycounter.reset_position"),
+        this.addRenderableWidget(
+            Button.builder(
+                Component.translatable("button.daycounter.reset_position"),
                 button -> resetPosition()
             )
-            .dimensions((this.width - buttonWidth) / 2, this.height - 30, buttonWidth, 20)
+            .bounds((this.width - buttonWidth) / 2, this.height - 30, buttonWidth, 20)
             .build()
         );
 
     }
 
     private void setDefaultPosition() {
-        Text text = Text.translatable("hud.day", getDayCount.getCurrentDay());
-        int boxWidth = this.textRenderer.getWidth(text) + 12;
+        Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
+        int boxWidth = this.font.width(text) + 12;
 
         ModConfig.hudX = (this.width / 2) - (boxWidth / 2);
         ModConfig.hudY = this.height - 68;
@@ -58,17 +58,17 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(DrawContext drawContext, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(GuiGraphics drawContext, int mouseX, int mouseY, float partialTick) {
         drawContext.fill(0, 0, this.width, this.height, 0x90000000);
     }
 
     @Override
-    public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphics drawContext, int mouseX, int mouseY, float partialTick) {
         super.render(drawContext, mouseX, mouseY, partialTick);
 
-        Text text = Text.translatable("hud.day", getDayCount.getCurrentDay());
-        int textWidth = this.textRenderer.getWidth(text);
-        int textHeight = this.textRenderer.fontHeight;
+        Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
+        int textWidth = this.font.width(text);
+        int textHeight = this.font.lineHeight;
         int paddingX = 6;
         int paddingY = 4;
         int boxWidth = textWidth + (paddingX * 2);
@@ -118,12 +118,12 @@ public class ConfigScreen extends Screen {
         drawContext.fill(x, y + 1, x + 1, y + boxHeight - 1, 0xFFFFFF00);
         drawContext.fill(x + boxWidth - 1, y + 1, x + boxWidth, y + boxHeight - 1, 0xFFFFFF00);
 
-        drawContext.drawTextWithShadow(this.textRenderer, text, x + paddingX, y + paddingY + 1, 0xFFFFFFFF);
+        drawContext.drawString(this.font, text, x + paddingX, y + paddingY + 1, 0xFFFFFFFF);
 
-        Text hint1 = Text.translatable("screen.daycounter.config.hint_snap");
-        Text hint2 = Text.translatable("screen.daycounter.config.hint_controls");
-        drawContext.drawTextWithShadow(this.textRenderer, hint1, (this.width / 2) - (this.textRenderer.getWidth(hint1) / 2), 20, 0xFFFFFFFF);
-        drawContext.drawTextWithShadow(this.textRenderer, hint2, (this.width / 2) - (this.textRenderer.getWidth(hint2) / 2), 32, 0xAAAAAAFF);
+        Component hint1 = Component.translatable("screen.daycounter.config.hint_snap");
+        Component hint2 = Component.translatable("screen.daycounter.config.hint_controls");
+        drawContext.drawString(this.font, hint1, (this.width / 2) - (this.font.width(hint1) / 2), 20, 0xFFFFFFFF);
+        drawContext.drawString(this.font, hint2, (this.width / 2) - (this.font.width(hint2) / 2), 32, 0xAAAAAAFF);
 
     }
 
@@ -158,9 +158,9 @@ public class ConfigScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            Text text = Text.translatable("hud.day", getDayCount.getCurrentDay());
-            int boxWidth = this.textRenderer.getWidth(text) + 12;
-            int boxHeight = this.textRenderer.fontHeight + 9;
+            Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
+            int boxWidth = this.font.width(text) + 12;
+            int boxHeight = this.font.lineHeight + 9;
 
             if (mouseX >= ModConfig.hudX && mouseX <= ModConfig.hudX + boxWidth &&
                 mouseY >= ModConfig.hudY && mouseY <= ModConfig.hudY + boxHeight) {
@@ -177,9 +177,9 @@ public class ConfigScreen extends Screen {
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            Text text = Text.translatable("hud.day", getDayCount.getCurrentDay());
-            int boxWidth = this.textRenderer.getWidth(text) + 12;
-            int boxHeight = this.textRenderer.fontHeight + 9;
+            Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
+            int boxWidth = this.font.width(text) + 12;
+            int boxHeight = this.font.lineHeight + 9;
             ModConfig.rememberAnchor(this.width, this.height, boxWidth, boxHeight);
             this.isDragging = false;
         }
@@ -187,13 +187,13 @@ public class ConfigScreen extends Screen {
     }
 
     @Override
-    public void close() {
+    public void onClose() {
         ModConfig.save();
-        super.close();
+        super.onClose();
     }
 
     @Override
-    public boolean shouldPause() {
+    public boolean isPauseScreen() {
         return false;
     }
 }

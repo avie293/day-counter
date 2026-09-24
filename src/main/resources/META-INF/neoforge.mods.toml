@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="CC-BY-NC-4.0"
+
+[[mods]]
+modId="daycounter"
+version="${version}"
+displayName="Day Counter"
+logoFile="assets/day-counter/icon.png"
+authors="Avie29"
+description='''Displays the current Minecraft day in a configurable HUD.'''
+displayURL="https://modrinth.com/datapack/avies-day-counter"
+
+[[dependencies.daycounter]]
+modId="neoforge"
+type="required"
+versionRange="[21.1,)"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.daycounter]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.22)"
+ordering="NONE"
+side="CLIENT"
