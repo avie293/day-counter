@@ -21,6 +21,8 @@ public class ModConfig {
     public static boolean useCustomPosition = false;
     public static int hudX = 0;
     public static int hudY = 0;
+    public static String hudHorizontalAnchor = "LEFT";
+    public static String hudVerticalAnchor = "TOP";
 
     public static void load() {
         if (!CONFIG_FILE.exists()) {
@@ -38,6 +40,8 @@ public class ModConfig {
                 useCustomPosition = data.useCustomPosition;
                 hudX = data.hudX;
                 hudY = data.hudY;
+                hudHorizontalAnchor = data.hudHorizontalAnchor;
+                hudVerticalAnchor = data.hudVerticalAnchor;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,6 +56,8 @@ public class ModConfig {
         data.useCustomPosition = useCustomPosition;
         data.hudX = hudX;
         data.hudY = hudY;
+        data.hudHorizontalAnchor = hudHorizontalAnchor;
+        data.hudVerticalAnchor = hudVerticalAnchor;
 
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             GSON.toJson(data, writer);
@@ -67,5 +73,55 @@ public class ModConfig {
         boolean useCustomPosition = false;
         int hudX = 0;
         int hudY = 0;
+        String hudHorizontalAnchor = "LEFT";
+        String hudVerticalAnchor = "TOP";
+    }
+
+    public static int resolveHudX(int screenWidth, int boxWidth) {
+        return getHorizontalAnchorX(screenWidth, boxWidth) + hudX;
+    }
+
+    public static int resolveHudY(int screenHeight, int boxHeight) {
+        return getVerticalAnchorY(screenHeight, boxHeight) + hudY;
+    }
+
+    public static void setHudPosition(int x, int y, int screenWidth, int screenHeight, int boxWidth, int boxHeight) {
+        int maxX = screenWidth - boxWidth;
+        int maxY = screenHeight - boxHeight;
+
+        if (x == 0) {
+            hudHorizontalAnchor = "LEFT";
+        } else if (x == maxX) {
+            hudHorizontalAnchor = "RIGHT";
+        } else if (x == maxX / 2) {
+            hudHorizontalAnchor = "CENTER";
+        }
+
+        if (y == 0) {
+            hudVerticalAnchor = "TOP";
+        } else if (y == maxY) {
+            hudVerticalAnchor = "BOTTOM";
+        } else if (y == maxY / 2) {
+            hudVerticalAnchor = "MIDDLE";
+        }
+
+        hudX = x - getHorizontalAnchorX(screenWidth, boxWidth);
+        hudY = y - getVerticalAnchorY(screenHeight, boxHeight);
+    }
+
+    private static int getHorizontalAnchorX(int screenWidth, int boxWidth) {
+        return switch (hudHorizontalAnchor) {
+            case "CENTER" -> (screenWidth - boxWidth) / 2;
+            case "RIGHT" -> screenWidth - boxWidth;
+            default -> 0;
+        };
+    }
+
+    private static int getVerticalAnchorY(int screenHeight, int boxHeight) {
+        return switch (hudVerticalAnchor) {
+            case "MIDDLE" -> (screenHeight - boxHeight) / 2;
+            case "BOTTOM" -> screenHeight - boxHeight;
+            default -> 0;
+        };
     }
 }

@@ -45,9 +45,12 @@ public class ConfigScreen extends Screen {
     private void setDefaultPosition() {
         Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
         int boxWidth = this.font.width(text) + 12;
+        int boxHeight = this.font.lineHeight + 9;
 
-        ModConfig.hudX = (this.width / 2) - (boxWidth / 2);
-        ModConfig.hudY = this.height - 68;
+        ModConfig.hudHorizontalAnchor = "CENTER";
+        ModConfig.hudVerticalAnchor = "BOTTOM";
+        ModConfig.hudX = 0;
+        ModConfig.hudY = boxHeight - 68;
     }
 
     private void resetPosition() {
@@ -74,18 +77,16 @@ public class ConfigScreen extends Screen {
             int maxX = this.width - boxWidth;
             int maxY = this.height - boxHeight;
 
-            ModConfig.hudX = snapCoordinate(rawX, maxX, (this.width - boxWidth) / 2, true);
-            ModConfig.hudY = snapCoordinate(rawY, maxY, (this.height - boxHeight) / 2, false);
-
-            ModConfig.hudX = Math.max(0, Math.min(ModConfig.hudX, this.width - boxWidth));
-            ModConfig.hudY = Math.max(0, Math.min(ModConfig.hudY, this.height - boxHeight));
+            int snappedX = snapCoordinate(rawX, maxX, (this.width - boxWidth) / 2, true);
+            int snappedY = snapCoordinate(rawY, maxY, (this.height - boxHeight) / 2, false);
+            ModConfig.setHudPosition(snappedX, snappedY, this.width, this.height, boxWidth, boxHeight);
         } else {
             this.showVerticalGuide = false;
             this.showHorizontalGuide = false;
         }
 
-        int x = ModConfig.hudX;
-        int y = ModConfig.hudY;
+        int x = ModConfig.resolveHudX(this.width, boxWidth);
+        int y = ModConfig.resolveHudY(this.height, boxHeight);
 
         if (this.isDragging) {
             if (this.showVerticalGuide) {
@@ -155,12 +156,15 @@ public class ConfigScreen extends Screen {
             int boxWidth = this.font.width(text) + 12;
             int boxHeight = this.font.lineHeight + 9;
 
-            if (event.x() >= ModConfig.hudX && event.x() <= ModConfig.hudX + boxWidth &&
-                event.y() >= ModConfig.hudY && event.y() <= ModConfig.hudY + boxHeight) {
+            int x = ModConfig.resolveHudX(this.width, boxWidth);
+            int y = ModConfig.resolveHudY(this.height, boxHeight);
+
+            if (event.x() >= x && event.x() <= x + boxWidth &&
+                event.y() >= y && event.y() <= y + boxHeight) {
 
                 this.isDragging = true;
-                this.dragOffsetX = (int) event.x() - ModConfig.hudX;
-                this.dragOffsetY = (int) event.y() - ModConfig.hudY;
+                this.dragOffsetX = (int) event.x() - x;
+                this.dragOffsetY = (int) event.y() - y;
                 return true;
             }
         }

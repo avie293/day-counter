@@ -29,8 +29,10 @@ public class HUD {
         int x, y;
 
         if (ModConfig.useCustomPosition) {
-            x = ModConfig.hudX;
-            y = ModConfig.hudY;
+            int screenWidth = client.getWindow().getGuiScaledWidth();
+            int screenHeight = client.getWindow().getGuiScaledHeight();
+            x = ModConfig.resolveHudX(screenWidth, boxWidth);
+            y = ModConfig.resolveHudY(screenHeight, boxHeight);
         } else {
             int screenWidth = client.getWindow().getGuiScaledWidth();
             int screenHeight = client.getWindow().getGuiScaledHeight();
