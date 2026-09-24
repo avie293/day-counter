@@ -48,6 +48,9 @@ public class ConfigScreen extends Screen {
 
         ModConfig.hudX = (this.width / 2) - (boxWidth / 2);
         ModConfig.hudY = this.height - 68;
+        ModConfig.hudScreenWidth = this.width;
+        ModConfig.hudScreenHeight = this.height;
+        ModConfig.hudAnchorInitialized = false;
     }
 
     private void resetPosition() {
@@ -67,6 +70,8 @@ public class ConfigScreen extends Screen {
         int paddingY = 4;
         int boxWidth = textWidth + (paddingX * 2);
         int boxHeight = textHeight + (paddingY * 2) + 1;
+
+        ModConfig.updatePositionForScreen(this.width, this.height, boxWidth, boxHeight);
 
         if (this.isDragging) {
             int rawX = mouseX - this.dragOffsetX;
@@ -170,6 +175,10 @@ public class ConfigScreen extends Screen {
     @Override
     public boolean mouseReleased(@NonNull MouseButtonEvent event) {
         if (event.button() == 0) {
+            Component text = Component.translatable("hud.day", getDayCount.getCurrentDay());
+            int boxWidth = this.font.width(text) + 12;
+            int boxHeight = this.font.lineHeight + 9;
+            ModConfig.rememberAnchor(this.width, this.height, boxWidth, boxHeight);
             this.isDragging = false;
         }
         return super.mouseReleased(event);
