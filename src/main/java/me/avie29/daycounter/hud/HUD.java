@@ -28,28 +28,12 @@ public class HUD {
 
         int screenWidth = client.getWindow().getGuiScaledWidth();
         int screenHeight = client.getWindow().getGuiScaledHeight();
+        ModConfig.updatePositionForScreen(screenWidth, screenHeight, boxWidth, boxHeight);
+
         int x, y;
-
         if (ModConfig.useCustomPosition) {
-            boolean screenSizeChanged = ModConfig.hudScreenWidth > 0
-                && ModConfig.hudScreenHeight > 0
-                && (ModConfig.hudScreenWidth != screenWidth || ModConfig.hudScreenHeight != screenHeight);
-
-            if (screenSizeChanged) {
-                ModConfig.hudX = Math.round((float) ModConfig.hudX * screenWidth / ModConfig.hudScreenWidth);
-                ModConfig.hudY = Math.round((float) ModConfig.hudY * screenHeight / ModConfig.hudScreenHeight);
-            }
-
-            ModConfig.hudScreenWidth = screenWidth;
-            ModConfig.hudScreenHeight = screenHeight;
-            x = Math.max(0, Math.min(ModConfig.hudX, screenWidth - boxWidth));
-            y = Math.max(0, Math.min(ModConfig.hudY, screenHeight - boxHeight));
-            ModConfig.hudX = x;
-            ModConfig.hudY = y;
-
-            if (screenSizeChanged) {
-                ModConfig.save();
-            }
+            x = ModConfig.hudX;
+            y = ModConfig.hudY;
         } else {
             x = (screenWidth / 2) - (boxWidth / 2);
             y = screenHeight - 68;
