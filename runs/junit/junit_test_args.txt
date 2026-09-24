@@ -1,5 +1,5 @@
 --version
-26.1.1.15-beta
+26.1.2.109
 --assetIndex
 asset-index
 --assetsDir
