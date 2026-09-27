@@ -1,37 +1,34 @@
 package me.avie29.daycounter.hud;
 
-import me.avie29.daycounter.config.ModConfig;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import com.mojang.blaze3d.platform.InputConstants;
+import me.avie29.daycounter.config.DayCounterConfig;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 public class KeyBindings {
 
-    public static KeyMapping toggleHudKey;
+    public static final KeyMapping toggleHudKey = new KeyMapping(
+        "key.daycounter.toggle_hud",
+        InputConstants.KEY_H,
+        KeyMapping.Category.MISC
+    );
 
-    public static void register() {
-        toggleHudKey = new KeyMapping(
-            "key.daycounter.toggle_hud",
-            72,
-            KeyMapping.Category.MISC
-        );
-        KeyMappingHelper.registerKeyMapping(toggleHudKey);
+    public static void handle(Minecraft client) {
+        var player = client.player;
+        if (player == null) {
+            return;
+        }
+        while (toggleHudKey.consumeClick()) {
+            boolean visible = !DayCounterConfig.HUD_VISIBLE.get();
+            DayCounterConfig.HUD_VISIBLE.set(visible);
+            DayCounterConfig.get().save();
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-                var player = client.player;
-                if (toggleHudKey != null && player != null) {
-                while (toggleHudKey.consumeClick()) {
-                    ModConfig.hudVisible = !ModConfig.hudVisible;
-                    ModConfig.save();
-
-                        player.sendSystemMessage(
-                        Component.translatable(ModConfig.hudVisible
-                            ? "message.daycounter.hud_enabled"
-                            : "message.daycounter.hud_disabled")
-                    );
-                }
-            }
-        });
+            player.sendSystemMessage(
+                Component.translatable(visible
+                    ? "message.daycounter.hud_enabled"
+                    : "message.daycounter.hud_disabled")
+            );
+        }
     }
 }

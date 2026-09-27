@@ -32,6 +32,10 @@ bin/
 
 run/
 
+# local store descriptions
+
+/Description.md
+
 # java
 
 hs_err_*.log
