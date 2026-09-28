@@ -2,28 +2,42 @@ package me.avie29.daycounter;
 
 import me.avie29.daycounter.hud.HUD;
 import me.avie29.daycounter.hud.KeyBindings;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
-import net.minecraft.resources.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 
-public class DayCounter implements ClientModInitializer {
+@Mod(DayCounter.MOD_ID)
+public final class DayCounter {
 
-    public static final String MOD_ID = "day-counter";
+    public static final String MOD_ID = "day_counter";
 
-    @Override
-    public void onInitializeClient() {
-        KeyMappingHelper.registerKeyMapping(KeyBindings.toggleHudKey);
+    public DayCounter() {
+        if (FMLEnvironment.dist != Dist.CLIENT) {
+            return;
+        }
         DayCounterClient.init(MOD_ID);
 
-        HudElementRegistry.addLast(Identifier.fromNamespaceAndPath(MOD_ID, "day_hud"), (graphics, deltaTracker) -> HUD.render(graphics));
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modBus.addListener((RegisterKeyMappingsEvent event) -> event.register(KeyBindings.toggleHudKey));
+        modBus.addListener((RegisterGuiOverlaysEvent event) ->
+            event.registerAbove(VanillaGuiOverlay.CHAT_PANEL.id(), "day_hud", (gui, graphics, partialTick, width, height) -> HUD.render(graphics)));
 
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
-            dispatcher.register(DayCounterClient.<FabricClientCommandSource>command(FabricClientCommandSource::sendFeedback)));
-
-        ClientTickEvents.END_CLIENT_TICK.register(DayCounterClient::tick);
+        MinecraftForge.EVENT_BUS.addListener((RegisterClientCommandsEvent event) ->
+            event.getDispatcher().register(DayCounterClient.<CommandSourceStack>command(CommandSourceStack::sendSystemMessage)));
+        MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent event) -> {
+            if (event.phase == TickEvent.Phase.END) {
+                DayCounterClient.tick(Minecraft.getInstance());
+            }
+        });
     }
 }

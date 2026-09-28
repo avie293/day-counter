@@ -8,7 +8,7 @@ import me.avie29.tabbylib.api.TabbyLibApi;
 import me.avie29.tabbylib.api.option.Option;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.Locale;
@@ -17,7 +17,7 @@ public class HUD {
     private static final int PADDING_X = 6;
     private static final int PADDING_Y = 4;
 
-    public static void render(GuiGraphicsExtractor guiGraphics) {
+    public static void render(GuiGraphics guiGraphics) {
         Minecraft client = Minecraft.getInstance();
 
         if (!DayCounterConfig.HUD_VISIBLE.get() || client.player == null || TabbyLibApi.isHudEditorOpen()) {
@@ -48,7 +48,7 @@ public class HUD {
             }
 
             @Override
-            public void render(GuiGraphicsExtractor graphics, int x, int y) {
+            public void render(GuiGraphics graphics, int x, int y) {
                 this.layout().draw(graphics, x, y);
             }
         };
@@ -68,7 +68,7 @@ public class HUD {
 
     private static String time(boolean pending) {
         Minecraft client = Minecraft.getInstance();
-        long dayTime = client.level == null ? 6000 : Math.floorMod(client.level.getOverworldClockTime(), 24000L);
+        long dayTime = client.level == null ? 6000 : Math.floorMod(client.level.getDayTime(), 24000L);
         int hours = (int) ((dayTime / 1000 + 6) % 24);
         int minutes = (int) (dayTime % 1000 * 60 / 1000);
         if (value(DayCounterConfig.TWELVE_HOUR, pending)) {
@@ -104,13 +104,13 @@ public class HUD {
             return Math.round(this.unscaledHeight() * this.scale);
         }
 
-        void draw(GuiGraphicsExtractor graphics, int x, int y) {
+        void draw(GuiGraphics graphics, int x, int y) {
             int w = this.unscaledWidth();
             int h = this.unscaledHeight();
 
-            graphics.pose().pushMatrix();
-            graphics.pose().translate(x, y);
-            graphics.pose().scale(this.scale, this.scale);
+            graphics.pose().pushPose();
+            graphics.pose().translate(x, y, 0);
+            graphics.pose().scale(this.scale, this.scale, 1);
 
             if (value(DayCounterConfig.BACKGROUND_VISIBLE, this.pending)) {
                 int color = value(DayCounterConfig.BACKGROUND_COLOR, this.pending);
@@ -126,9 +126,9 @@ public class HUD {
                 graphics.fill(w - 1, 1, w, h - 1, color);
             }
 
-            graphics.text(this.font, this.text, PADDING_X, PADDING_Y + 1,
+            graphics.drawString(this.font, this.text, PADDING_X, PADDING_Y + 1,
                 value(DayCounterConfig.TEXT_COLOR, this.pending), value(DayCounterConfig.TEXT_SHADOW, this.pending));
-            graphics.pose().popMatrix();
+            graphics.pose().popPose();
         }
     }
 }

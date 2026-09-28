@@ -98,7 +98,7 @@ public final class DayCounterClient {
         LOGGER.info(
             "[Day Counter Debug] day={}, dayTime={}, gameTime={}, dimension={}, player=({}, {}, {}), hudVisible={}, backgroundVisible={}, hudPosition={}",
             getDayCount.getCurrentDay(),
-            level.getOverworldClockTime(),
+            level.getDayTime(),
             level.getGameTime(),
             level.dimension(),
             String.format("%.2f", player.getX()),

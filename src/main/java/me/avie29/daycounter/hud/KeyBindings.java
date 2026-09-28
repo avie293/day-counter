@@ -11,7 +11,7 @@ public class KeyBindings {
     public static final KeyMapping toggleHudKey = new KeyMapping(
         "key.daycounter.toggle_hud",
         InputConstants.KEY_H,
-        KeyMapping.Category.MISC
+        "key.categories.misc"
     );
 
     public static void handle(Minecraft client) {
