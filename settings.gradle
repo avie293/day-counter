@@ -1,12 +1,4 @@
 pluginManagement {
-	resolutionStrategy {
-		eachPlugin {
-			if (requested.id.id == 'fabric-loom') {
-				useModule("net.fabricmc:fabric-loom:${requested.version}")
-			}
-		}
-	}
-
 	repositories {
 		maven {
 			name = 'Fabric'
@@ -17,5 +9,4 @@ pluginManagement {
 	}
 }
 
-// Should match your modid
 rootProject.name = 'day-counter'

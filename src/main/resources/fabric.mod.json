@@ -22,9 +22,10 @@
 	},
 	"mixins": [],
 	"depends": {
-		"fabricloader": ">=0.16.5",
+		"fabricloader": ">=0.19.5",
 		"minecraft": "~1.21.1",
 		"java": ">=21",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"tabbylib": ">=1.0.0"
 	}
 }
