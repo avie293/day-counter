@@ -1,12 +1,12 @@
 modLoader="javafml"
 loaderVersion="[1,)"
-license="${mod_license}"
+license="CC-BY-NC-4.0"
 showAsDataPack=false
 
 [[mods]]
 modId="${mod_id}"
 version="${mod_version}"
-displayName="${mod_name}"
+displayName="Day Counter"
 authors="Avie29"
 description='''Displays the current Minecraft day in a configurable HUD.'''
 displayURL="https://modrinth.com/datapack/avies-day-counter"
@@ -24,4 +24,11 @@ modId="minecraft"
 type="required"
 versionRange="${minecraft_version_range}"
 ordering="NONE"
+side="CLIENT"
+
+[[dependencies.${mod_id}]]
+modId="tabbylib"
+type="required"
+versionRange="[1.0.0,)"
+ordering="AFTER"
 side="CLIENT"
