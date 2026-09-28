@@ -1,5 +1,5 @@
 plugins {
-	id 'java-library'
+	id 'eclipse'
 	id 'maven-publish'
 	id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 }
@@ -8,13 +8,10 @@ version = mod_version
 group = mod_group_id
 
 base {
-	archivesName = mod_id
+	archivesName = "day-counter-forge"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-repositories {
-}
 
 minecraft {
 	mappings channel: 'official', version: minecraft_version
@@ -22,10 +19,8 @@ minecraft {
 	runs {
 		client {
 			workingDirectory project.file('run')
-			property 'forge.logging.markers', 'REGISTRIES'
-			property 'forge.logging.console.level', 'debug'
 			mods {
-				day_counter {
+				"${mod_id}" {
 					source sourceSets.main
 				}
 			}
@@ -33,56 +28,40 @@ minecraft {
 	}
 }
 
-dependencies {
-	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+repositories {
+	mavenCentral()
+	// TabbyLib from the local maven repository (run "gradlew publishToMavenLocal" in the TabbyLib project)
+	mavenLocal()
 }
 
-tasks.withType(ProcessResources).configureEach {
+dependencies {
+	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+	implementation fg.deobf("me.avie29.tabbylib:tabbylib-forge:${tabbylib_version}")
+	compileOnly 'org.jspecify:jspecify:1.0.0'
+}
+
+tasks.named('processResources', ProcessResources).configure {
 	def replaceProperties = [
-		minecraft_version: minecraft_version,
 		minecraft_version_range: minecraft_version_range,
-		forge_version: forge_version,
+		forge_version_range: forge_version_range,
 		mod_id: mod_id,
-		mod_name: mod_name,
-		mod_license: mod_license,
-		mod_version: mod_version,
+		mod_version: mod_version
 	]
-	inputs.properties(replaceProperties)
-	filesMatching(['META-INF/mods.toml']) {
-		expand(replaceProperties)
+	inputs.properties replaceProperties
+	filesMatching('META-INF/mods.toml') {
+		expand replaceProperties
 	}
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 17
+	options.encoding = 'UTF-8'
 }
 
 java {
 	withSourcesJar()
 }
 
-jar {
-	def projectName = project.name
-	inputs.property "projectName", projectName
-
-	from("LICENSE") {
-		rename { "${it}_$projectName"}
-	}
-}
-
-// configure the maven publication
-publishing {
-	publications {
-		create("mavenJava", MavenPublication) {
-			from components.java
-		}
-	}
-
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
+// Minecraft 1.20.1 runs with obfuscated names, so the jar is converted back after building
+tasks.named('jar', Jar).configure {
+	finalizedBy 'reobfJar'
 }

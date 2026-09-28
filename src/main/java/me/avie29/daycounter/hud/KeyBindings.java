@@ -1,37 +1,34 @@
 package me.avie29.daycounter.hud;
 
-import me.avie29.daycounter.config.ModConfig;
+import com.mojang.blaze3d.platform.InputConstants;
+import me.avie29.daycounter.config.DayCounterConfig;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 
 public class KeyBindings {
 
-    public static KeyMapping toggleHudKey;
+    public static final KeyMapping toggleHudKey = new KeyMapping(
+        "key.daycounter.toggle_hud",
+        InputConstants.KEY_H,
+        "key.categories.misc"
+    );
 
-    public static void register(RegisterKeyMappingsEvent event) {
-        toggleHudKey = new KeyMapping(
-            "key.day_counter.toggle_hud",
-            72,
-            KeyMapping.CATEGORY_MISC
-        );
-        event.register(toggleHudKey);
-    }
-
-    public static void handleClientTick(Minecraft client) {
+    public static void handle(Minecraft client) {
         var player = client.player;
-        if (toggleHudKey != null && player != null) {
-                while (toggleHudKey.consumeClick()) {
-                    ModConfig.hudVisible = !ModConfig.hudVisible;
-                    ModConfig.save();
+        if (player == null) {
+            return;
+        }
+        while (toggleHudKey.consumeClick()) {
+            boolean visible = !DayCounterConfig.HUD_VISIBLE.get();
+            DayCounterConfig.HUD_VISIBLE.set(visible);
+            DayCounterConfig.get().save();
 
-                        player.sendSystemMessage(
-                        Component.translatable(ModConfig.hudVisible
-                            ? "day_counter.message.hud_enabled"
-                            : "day_counter.message.hud_disabled")
-                    );
-                }
+            player.sendSystemMessage(
+                Component.translatable(visible
+                    ? "message.daycounter.hud_enabled"
+                    : "message.daycounter.hud_disabled")
+            );
         }
     }
 }
