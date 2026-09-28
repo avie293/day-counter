@@ -1,66 +1,61 @@
 plugins {
 	id 'java-library'
-	id 'net.neoforged.gradle.userdev' version '7.0.167'
 	id 'maven-publish'
+	id 'net.neoforged.moddev' version '2.0.147'
 }
 
-repositories {
-	// Add repositories to retrieve artifacts from in here.
-	// You should only use this when depending on other mods because
-	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
-	// for more information about repositories.
+version = mod_version
+group = mod_group_id
+
+base {
+	archivesName = "day-counter-neoforge"
 }
 
-dependencies {
-	implementation "net.neoforged:neoforge:${project.neoforge_version}"
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-processResources {
-	def version = project.version
-	inputs.property "version", version
+neoForge {
+	version = project.neo_version
 
-	filesMatching("META-INF/neoforge.mods.toml") {
-		expand "version": version
-	}
-}
-
-tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
-}
-
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
-}
-
-jar {
-	def projectName = project.name
-	inputs.property "projectName", projectName
-
-	from("LICENSE") {
-		rename { "${it}_$projectName"}
-	}
-}
-
-// configure the maven publication
-publishing {
-	publications {
-		create("mavenJava", MavenPublication) {
-			from components.java
+	runs {
+		client {
+			client()
 		}
 	}
 
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
+	mods {
+		"${mod_id}" {
+			sourceSet(sourceSets.main)
+		}
 	}
+}
+
+tasks.withType(ProcessResources).configureEach {
+	def replaceProperties = [
+		minecraft_version_range: minecraft_version_range,
+		neo_version: neo_version,
+		mod_id: mod_id,
+		mod_version: mod_version
+	]
+	inputs.properties(replaceProperties)
+	filesMatching('META-INF/neoforge.mods.toml') {
+		expand(replaceProperties)
+	}
+}
+
+repositories {
+	// TabbyLib from the local maven repository (run "gradlew publishToMavenLocal" in the TabbyLib project)
+	mavenLocal()
+}
+
+dependencies {
+	implementation "me.avie29.tabbylib:tabbylib-neoforge:${tabbylib_version}"
+	compileOnly "org.jspecify:jspecify:1.0.0"
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+}
+
+java {
+	withSourcesJar()
 }

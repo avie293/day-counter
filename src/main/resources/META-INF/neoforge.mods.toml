@@ -1,26 +1,34 @@
 modLoader="javafml"
-loaderVersion="[4,)"
+loaderVersion="[1,)"
 license="CC-BY-NC-4.0"
+showAsDataPack=false
 
 [[mods]]
-modId="daycounter"
-version="${version}"
+modId="${mod_id}"
+version="${mod_version}"
 displayName="Day Counter"
-logoFile="assets/day-counter/icon.png"
 authors="Avie29"
 description='''Displays the current Minecraft day in a configurable HUD.'''
 displayURL="https://modrinth.com/datapack/avies-day-counter"
+logoFile="assets/day-counter/icon.png"
 
-[[dependencies.daycounter]]
+[[dependencies.${mod_id}]]
 modId="neoforge"
 type="required"
-versionRange="[21.1,)"
+versionRange="[${neo_version},)"
 ordering="NONE"
 side="CLIENT"
 
-[[dependencies.daycounter]]
+[[dependencies.${mod_id}]]
 modId="minecraft"
 type="required"
-versionRange="[1.21.1,1.22)"
+versionRange="${minecraft_version_range}"
 ordering="NONE"
+side="CLIENT"
+
+[[dependencies.${mod_id}]]
+modId="tabbylib"
+type="required"
+versionRange="[1.0.0,)"
+ordering="AFTER"
 side="CLIENT"
