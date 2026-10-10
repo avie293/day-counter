@@ -40,5 +40,18 @@
   "config.day-counter.borderColor": "Rahmenfarbe",
   "config.day-counter.debugEnabled": "Debug-Ausgabe",
   "config.day-counter.debugEnabled.tooltip": "Schreibt alle 5 Sekunden Tag, Uhrzeit und Position ins Log.",
-  "config.day-counter.advanced.description": "Einstellungen zur Fehlersuche. Normalerweise musst du hier nichts ändern."
+  "config.day-counter.advanced.description": "Einstellungen zur Fehlersuche. Normalerweise musst du hier nichts ändern.",
+  "config.day-counter.dimensionDay": "Tag im Nether / End",
+  "config.day-counter.dimensionDay.overworld": "Oberwelt",
+  "config.day-counter.dimensionDay.dimension": "Dimension",
+  "config.day-counter.dimensionDay.tooltip": "Oberwelt: zählt immer die Tage der Oberwelt. Dimension: nutzt die Uhr der Dimension, in der du bist. Der Nether hat keine eigene Uhr und zeigt weiter die Oberwelt-Tage.",
+  "config.day-counter.font": "Schriftart",
+  "config.day-counter.font.new": "Neu",
+  "config.day-counter.font.classic": "Klassisch",
+  "config.day-counter.font.tooltip": "Neu: die Schrift aus dem Day-Counter-Datapack. Klassisch: die normale Minecraft-Schrift.",
+  "config.day-counter.bedIcon": "Bett-Symbol",
+  "config.day-counter.bedIcon.off": "Aus",
+  "config.day-counter.bedIcon.hotbar": "Hotbar",
+  "config.day-counter.bedIcon.counter": "Zähler",
+  "config.day-counter.bedIcon.tooltip": "Zeigt ein Bett, wenn du schlafen kannst. Hotbar: rechts neben der Hotbar. Zähler: hinter dem Tageszähler."
 }
