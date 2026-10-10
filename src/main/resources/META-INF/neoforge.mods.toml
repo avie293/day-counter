@@ -1,6 +1,7 @@
 modLoader="javafml"
 loaderVersion="[1,)"
 license="CC-BY-NC-4.0"
+issueTrackerURL="https://github.com/avie293/avie-issues/issues"
 showAsDataPack=false
 
 [[mods]]
@@ -29,6 +30,6 @@ side="CLIENT"
 [[dependencies.${mod_id}]]
 modId="tabbylib"
 type="required"
-versionRange="[1.0.0,)"
+versionRange="[1.1.0,)"
 ordering="AFTER"
 side="CLIENT"

@@ -12,8 +12,7 @@ base {
 }
 
 repositories {
-	// TabbyLib from the local maven repository (run "gradlew publishToMavenLocal" in the TabbyLib project)
-	mavenLocal()
+	maven { url = "https://avie.cc/maven" }
 }
 
 dependencies {
@@ -57,4 +56,13 @@ tasks.withType(JavaCompile).configureEach {
 
 java {
 	withSourcesJar()
+}
+
+tasks.register('copyModJar', Copy) {
+	from tasks.named('jar')
+	into 'C:/Users/Tim Wolf/OneDrive/Dokumente/DayCounter'
+}
+
+tasks.named('build') {
+	finalizedBy 'copyModJar'
 }
