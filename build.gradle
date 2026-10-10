@@ -10,8 +10,7 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 
-	// TabbyLib from the local maven repository (run "gradlew publishToMavenLocal" in the TabbyLib project)
-	mavenLocal()
+	maven { url = "https://avie.cc/maven" }
 }
 
 dependencies {
@@ -72,4 +71,14 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
+}
+
+tasks.register('copyModJar', Copy) {
+	from tasks.named('jar')
+	rename { "day-counter-fabric-${project.version}.jar" }
+	into 'C:/Users/Tim Wolf/OneDrive/Dokumente/DayCounter'
+}
+
+tasks.named('build') {
+	finalizedBy 'copyModJar'
 }
