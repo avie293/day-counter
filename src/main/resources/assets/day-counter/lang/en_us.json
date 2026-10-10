@@ -40,5 +40,18 @@
   "config.day-counter.borderColor": "Border color",
   "config.day-counter.debugEnabled": "Debug output",
   "config.day-counter.debugEnabled.tooltip": "Writes the day, time and position to the log every 5 seconds.",
-  "config.day-counter.advanced.description": "Settings for troubleshooting. You normally don't need to change these."
+  "config.day-counter.advanced.description": "Settings for troubleshooting. You normally don't need to change these.",
+  "config.day-counter.dimensionDay": "Day in Nether / End",
+  "config.day-counter.dimensionDay.overworld": "Overworld",
+  "config.day-counter.dimensionDay.dimension": "Dimension",
+  "config.day-counter.dimensionDay.tooltip": "Overworld: always count the overworld days. Dimension: use the clock of the dimension you are in. The Nether has no clock of its own and keeps the overworld days.",
+  "config.day-counter.font": "Font",
+  "config.day-counter.font.new": "New",
+  "config.day-counter.font.classic": "Classic",
+  "config.day-counter.font.tooltip": "New: the font of the Day Counter datapack. Classic: the normal Minecraft font.",
+  "config.day-counter.bedIcon": "Bed icon",
+  "config.day-counter.bedIcon.off": "Off",
+  "config.day-counter.bedIcon.hotbar": "Hotbar",
+  "config.day-counter.bedIcon.counter": "Counter",
+  "config.day-counter.bedIcon.tooltip": "Shows a bed when you can sleep. Hotbar: right next to the hotbar. Counter: behind the day counter."
 }
