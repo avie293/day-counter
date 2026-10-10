@@ -24,6 +24,22 @@ public final class DayCounterConfig {
 		CUSTOM
 	}
 
+	public enum FontStyle {
+		NEW,
+		CLASSIC
+	}
+
+	public enum BedIcon {
+		OFF,
+		HOTBAR,
+		COUNTER
+	}
+
+	public enum DimensionDay {
+		OVERWORLD,
+		DIMENSION
+	}
+
 	public static final BooleanOption HUD_VISIBLE = BooleanOption.builder("hudVisible", true).build();
 	public static final BooleanOption DEBUG = BooleanOption.builder("debugEnabled", false).build();
 	public static KeyBindOption TOGGLE_KEY;
@@ -37,6 +53,10 @@ public final class DayCounterConfig {
 	public static final BooleanOption TWELVE_HOUR = BooleanOption.builder("twelveHourClock", false)
 		.visibleWhen(() -> TEXT_FORMAT.getPending() == TextFormat.DAY_AND_TIME || TEXT_FORMAT.getPending() == TextFormat.CUSTOM)
 		.build();
+	public static final EnumOption<DimensionDay> DIMENSION_DAY = EnumOption.builder("dimensionDay", DimensionDay.OVERWORLD).build();
+
+	public static final EnumOption<FontStyle> FONT = EnumOption.builder("font", FontStyle.NEW).build();
+	public static final EnumOption<BedIcon> BED_ICON = EnumOption.builder("bedIcon", BedIcon.OFF).build();
 
 	public static final ColorOption TEXT_COLOR = ColorOption.builder("textColor", 0xFFFFFFFF).build();
 	public static final BooleanOption TEXT_SHADOW = BooleanOption.builder("textShadow", true).build();
@@ -72,8 +92,8 @@ public final class DayCounterConfig {
 			.migration(DayCounterConfig::migrateOldPosition)
 			.category("general", category -> category
 				.add(HUD_VISIBLE, TOGGLE_KEY, POSITION)
-				.group("text", group -> group.add(TEXT_FORMAT, CUSTOM_TEXT, TWELVE_HOUR))
-				.group("appearance", group -> group.add(TEXT_COLOR, TEXT_SHADOW, SCALE,
+				.group("text", group -> group.add(TEXT_FORMAT, CUSTOM_TEXT, TWELVE_HOUR, DIMENSION_DAY))
+				.group("appearance", group -> group.add(FONT, BED_ICON, TEXT_COLOR, TEXT_SHADOW, SCALE,
 					BACKGROUND_VISIBLE, BACKGROUND_COLOR, BORDER_VISIBLE, BORDER_COLOR)))
 			.category("advanced", category -> category
 				.label(Component.translatable("config.day-counter.advanced.description"))

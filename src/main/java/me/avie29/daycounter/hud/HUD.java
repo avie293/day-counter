@@ -6,21 +6,32 @@ import me.avie29.tabbylib.api.HudPosition;
 import me.avie29.tabbylib.api.HudPreview;
 import me.avie29.tabbylib.api.TabbyLibApi;
 import me.avie29.tabbylib.api.option.Option;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.AttackIndicatorStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FontDescription;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.HumanoidArm;
 
 import java.util.Locale;
 
 public class HUD {
     private static final int PADDING_X = 6;
     private static final int PADDING_Y = 4;
+    private static final FontDescription COUNTER_FONT = new FontDescription.Resource(Identifier.fromNamespaceAndPath("day-counter", "counter"));
+    private static final FontDescription ICON_FONT = new FontDescription.Resource(Identifier.fromNamespaceAndPath("day-counter", "icons"));
+    private static final String BED = "";
 
     public static void render(GuiGraphicsExtractor guiGraphics) {
         Minecraft client = Minecraft.getInstance();
+        LocalPlayer player = client.player;
 
-        if (!DayCounterConfig.HUD_VISIBLE.get() || client.player == null || TabbyLibApi.isHudEditorOpen()) {
+        if (!DayCounterConfig.HUD_VISIBLE.get() || player == null || TabbyLibApi.isHudEditorOpen()) {
             return;
         }
 
@@ -29,6 +40,25 @@ public class HUD {
         int screenHeight = client.getWindow().getGuiScaledHeight();
         HudPosition position = DayCounterConfig.POSITION.get();
         layout.draw(guiGraphics, position.x(screenWidth, layout.width()), position.y(screenHeight, layout.height()));
+
+        if (DayCounterConfig.BED_ICON.get() == DayCounterConfig.BedIcon.HOTBAR && getDayCount.canSleep() && !player.isSpectator()) {
+            guiGraphics.text(client.font, bedIcon(), hotbarBedX(client, player, screenWidth), screenHeight - 15, 0xFFFFFFFF, false);
+        }
+    }
+
+    private static int hotbarBedX(Minecraft client, LocalPlayer player, int screenWidth) {
+        int x = screenWidth / 2 + 91 + 6;
+        if (player.getMainArm() == HumanoidArm.LEFT && !player.getOffhandItem().isEmpty()) {
+            x += 29;
+        }
+        if (player.getMainArm() == HumanoidArm.RIGHT && client.options.attackIndicator().get() == AttackIndicatorStatus.HOTBAR) {
+            x += 24;
+        }
+        return x;
+    }
+
+    private static Component bedIcon() {
+        return Component.literal(BED).withStyle(style -> style.withFont(ICON_FONT).withColor(ChatFormatting.WHITE).withoutShadow());
     }
 
     public static HudPreview preview() {
@@ -55,8 +85,9 @@ public class HUD {
     }
 
     public static Component text(boolean pending) {
-        long day = getDayCount.getCurrentDay();
-        return switch (value(DayCounterConfig.TEXT_FORMAT, pending)) {
+        long day = getDayCount.getCurrentDay(pending);
+        DayCounterConfig.TextFormat format = value(DayCounterConfig.TEXT_FORMAT, pending);
+        Component text = switch (format) {
             case DAY -> Component.translatable("hud.day", day);
             case NUMBER -> Component.literal(Long.toString(day));
             case DAY_AND_TIME -> Component.translatable("hud.day_time", day, time(pending));
@@ -64,11 +95,24 @@ public class HUD {
                 .replace("{day}", Long.toString(day))
                 .replace("{time}", time(pending)));
         };
+
+        MutableComponent result;
+        if (value(DayCounterConfig.FONT, pending) == DayCounterConfig.FontStyle.NEW) {
+            String string = format == DayCounterConfig.TextFormat.CUSTOM ? text.getString() : text.getString().toUpperCase(Locale.ROOT);
+            result = Component.literal(string).withStyle(style -> style.withFont(COUNTER_FONT));
+        } else {
+            result = text.copy();
+        }
+
+        if (value(DayCounterConfig.BED_ICON, pending) == DayCounterConfig.BedIcon.COUNTER && (pending || getDayCount.canSleep())) {
+            result = Component.empty().append(result).append(" ").append(bedIcon());
+        }
+        return result;
     }
 
     private static String time(boolean pending) {
         Minecraft client = Minecraft.getInstance();
-        long dayTime = client.level == null ? 6000 : Math.floorMod(client.level.getOverworldClockTime(), 24000L);
+        long dayTime = client.level == null ? 6000 : Math.floorMod(getDayCount.getClockTime(client.level, pending), 24000L);
         int hours = (int) ((dayTime / 1000 + 6) % 24);
         int minutes = (int) (dayTime % 1000 * 60 / 1000);
         if (value(DayCounterConfig.TWELVE_HOUR, pending)) {
