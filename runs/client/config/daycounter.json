@@ -4,9 +4,9 @@
   "backgroundVisible": true,
   "useCustomPosition": true,
   "hudX": 193,
-  "hudY": 170,
+  "hudY": 172,
   "hudAnchorX": 1,
-  "hudAnchorY": 0,
+  "hudAnchorY": 2,
   "hudOffsetX": 0,
-  "hudOffsetY": 170
+  "hudOffsetY": 50
 }
