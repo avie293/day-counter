@@ -2,6 +2,7 @@ package cc.avie.daycounter;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import cc.avie.daycounter.config.DayCounterConfig;
+import cc.avie.daycounter.hud.HUD;
 import cc.avie.daycounter.hud.KeyBindings;
 import cc.avie.tabbylib.api.TabbyLibApi;
 import cc.avie.tabbylib.api.option.BooleanOption;
@@ -74,6 +75,7 @@ public final class DayCounterClient {
 
     public static void tick(Minecraft client) {
         KeyBindings.handle(client);
+        HUD.tick(client);
 
         if (client.level == null || client.player == null) {
             return;

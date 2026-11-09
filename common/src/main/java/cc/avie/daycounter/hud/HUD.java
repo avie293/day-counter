@@ -1,5 +1,6 @@
 package cc.avie.daycounter.hud;
 
+import cc.avie.daycounter.DayCounterClient;
 import cc.avie.daycounter.DayTime;
 import cc.avie.daycounter.config.DayCounterConfig;
 import cc.avie.tabbylib.api.HudPosition;
@@ -15,33 +16,44 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FontDescription;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 
 import java.util.Locale;
 
-public class HUD {
+public final class HUD {
     private static final int PADDING_X = 6;
     private static final int PADDING_Y = 4;
-    private static final FontDescription ICON_FONT = new FontDescription.Resource(Identifier.fromNamespaceAndPath("day-counter", "icons"));
-    private static final String BED = "";
+    private static final FontDescription ICON_FONT = new FontDescription.Resource(DayCounterClient.id("icons"));
+    // Glyph of the bed texture in assets/day-counter/font/icons.json
+    private static final Component BED_ICON = Component.literal("\uE000")
+        .withStyle(style -> style.withFont(ICON_FONT).withColor(ChatFormatting.WHITE).withoutShadow());
+
+    // The text only changes with the game time and the config, so it is laid out once per tick instead of every frame
+    private static Layout layout;
+
+    private HUD() {
+    }
+
+    public static void tick(Minecraft client) {
+        layout = DayCounterConfig.HUD_VISIBLE.get() && client.player != null ? new Layout(client.font, false) : null;
+    }
 
     public static void render(GuiGraphicsExtractor guiGraphics) {
         Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
+        Layout layout = HUD.layout;
 
-        if (!DayCounterConfig.HUD_VISIBLE.get() || player == null || TabbyLibApi.isHudEditorOpen()) {
+        if (layout == null || player == null || TabbyLibApi.isHudEditorOpen()) {
             return;
         }
 
-        Layout layout = new Layout(client.font, false);
         int screenWidth = client.getWindow().getGuiScaledWidth();
         int screenHeight = client.getWindow().getGuiScaledHeight();
         HudPosition position = DayCounterConfig.POSITION.get();
         layout.draw(guiGraphics, position.x(screenWidth, layout.width()), position.y(screenHeight, layout.height()));
 
         if (DayCounterConfig.BED_ICON.get() == DayCounterConfig.BedIcon.HOTBAR && DayTime.canSleep() && !player.isSpectator()) {
-            guiGraphics.text(client.font, bedIcon(), hotbarBedX(client, player, screenWidth), screenHeight - 15, 0xFFFFFFFF, false);
+            guiGraphics.text(client.font, BED_ICON, hotbarBedX(client, player, screenWidth), screenHeight - 15, 0xFFFFFFFF, false);
         }
     }
 
@@ -54,10 +66,6 @@ public class HUD {
             x += 24;
         }
         return x;
-    }
-
-    private static Component bedIcon() {
-        return Component.literal(BED).withStyle(style -> style.withFont(ICON_FONT).withColor(ChatFormatting.WHITE).withoutShadow());
     }
 
     public static HudPreview preview() {
@@ -98,7 +106,7 @@ public class HUD {
         MutableComponent result = text.copy();
 
         if (value(DayCounterConfig.BED_ICON, pending) == DayCounterConfig.BedIcon.COUNTER && (pending || DayTime.canSleep())) {
-            result = Component.empty().append(result).append(" ").append(bedIcon());
+            result = Component.empty().append(result).append(" ").append(BED_ICON);
         }
         return result;
     }
