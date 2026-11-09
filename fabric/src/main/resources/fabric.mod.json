@@ -1,34 +1,33 @@
 {
 	"schemaVersion": 1,
-	"id": "day-counter",
+	"id": "${mod_id}",
 	"version": "${version}",
-	"name": "Day Counter",
-	"description": "Displays the current Minecraft day in a configurable HUD.",
+	"name": "${mod_name}",
+	"description": "${mod_description}",
 	"authors": [
-		"Avie"
+		"${mod_author}"
 	],
 	"contact": {
-		"homepage": "https://avie.cc/",
-		"sources": "https://github.com/avie293/day-counter",
-		"issues": "https://github.com/avie293/avie-issues/issues"
+		"homepage": "${mod_homepage}",
+		"sources": "${mod_sources}",
+		"issues": "${mod_issues}"
 	},
-	"license": "Avie Terms & Conditions 1.0",
-	"icon": "assets/day-counter/icon.png",
+	"license": "${mod_license}",
+	"icon": "assets/${mod_id}/icon.png",
 	"environment": "client",
 	"entrypoints": {
 		"client": [
 			"cc.avie.daycounter.fabric.DayCounterFabric"
 		]
 	},
-	"mixins": [],
 	"depends": {
-		"fabricloader": ">=0.20.1",
-		"minecraft": "~26.3",
+		"fabricloader": ">=${loader_version}",
+		"minecraft": "~${minecraft_version}",
 		"java": ">=25",
 		"fabric-api": "*",
 		"tabbylib": ">=${tabbylib_version}"
 	},
-    "custom": {
+	"custom": {
 		"modmenu": {
 			"links": {
 				"avie29.discord": "https://discord.gg/57TZ8BJvd9"

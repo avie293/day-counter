@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
 license = "${mod_license}"
-issueTrackerURL = "https://github.com/avie293/avie-issues/issues"
+issueTrackerURL = "${mod_issues}"
 
 [[mods]]
 modId = "${neoforge_mod_id}"
@@ -9,7 +9,7 @@ version = "${version}"
 displayName = "${mod_name}"
 description = '''${mod_description}'''
 authors = "${mod_author}"
-displayURL = "https://avie.cc/"
+displayURL = "${mod_homepage}"
 iconFile = "assets/${mod_id}/icon.png"
 
 [[dependencies.${neoforge_mod_id}]]
@@ -22,7 +22,7 @@ side = "CLIENT"
 [[dependencies.${neoforge_mod_id}]]
 modId = "minecraft"
 type = "required"
-versionRange = "[${minecraft_version},26.4)"
+versionRange = "${minecraft_version_range}"
 ordering = "NONE"
 side = "CLIENT"
 
