@@ -14,7 +14,7 @@ public class DayCounterFabric implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        KeyMappingHelper.registerKeyMapping(KeyBindings.toggleHudKey);
+        KeyMappingHelper.registerKeyMapping(KeyBindings.TOGGLE_HUD);
         DayCounterClient.init(DayCounterClient.MOD_ID);
 
         HudElementRegistry.addLast(DayCounterClient.id("day_hud"), (graphics, deltaTracker) -> HUD.render(graphics));

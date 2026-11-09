@@ -1,6 +1,6 @@
 package cc.avie.daycounter.hud;
 
-import cc.avie.daycounter.getDayCount;
+import cc.avie.daycounter.DayTime;
 import cc.avie.daycounter.config.DayCounterConfig;
 import cc.avie.tabbylib.api.HudPosition;
 import cc.avie.tabbylib.api.HudPreview;
@@ -40,7 +40,7 @@ public class HUD {
         HudPosition position = DayCounterConfig.POSITION.get();
         layout.draw(guiGraphics, position.x(screenWidth, layout.width()), position.y(screenHeight, layout.height()));
 
-        if (DayCounterConfig.BED_ICON.get() == DayCounterConfig.BedIcon.HOTBAR && getDayCount.canSleep() && !player.isSpectator()) {
+        if (DayCounterConfig.BED_ICON.get() == DayCounterConfig.BedIcon.HOTBAR && DayTime.canSleep() && !player.isSpectator()) {
             guiGraphics.text(client.font, bedIcon(), hotbarBedX(client, player, screenWidth), screenHeight - 15, 0xFFFFFFFF, false);
         }
     }
@@ -84,7 +84,7 @@ public class HUD {
     }
 
     public static Component text(boolean pending) {
-        long day = getDayCount.getCurrentDay();
+        long day = DayTime.getCurrentDay();
         DayCounterConfig.TextFormat format = value(DayCounterConfig.TEXT_FORMAT, pending);
         Component text = switch (format) {
             case DAY -> Component.translatable("hud.day", day);
@@ -97,7 +97,7 @@ public class HUD {
 
         MutableComponent result = text.copy();
 
-        if (value(DayCounterConfig.BED_ICON, pending) == DayCounterConfig.BedIcon.COUNTER && (pending || getDayCount.canSleep())) {
+        if (value(DayCounterConfig.BED_ICON, pending) == DayCounterConfig.BedIcon.COUNTER && (pending || DayTime.canSleep())) {
             result = Component.empty().append(result).append(" ").append(bedIcon());
         }
         return result;

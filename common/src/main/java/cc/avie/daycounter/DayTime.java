@@ -4,7 +4,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.level.Level;
 
-public class getDayCount {
+public final class DayTime {
+    private DayTime() {
+    }
 
     public static long getCurrentDay() {
         Minecraft client = Minecraft.getInstance();

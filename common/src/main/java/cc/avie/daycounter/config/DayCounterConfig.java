@@ -66,7 +66,7 @@ public final class DayCounterConfig {
 	}
 
 	public static void init(String modId) {
-		TOGGLE_KEY = Options.keyBind("toggleKey", KeyBindings.toggleHudKey);
+		TOGGLE_KEY = Options.keyBind("toggleKey", KeyBindings.TOGGLE_HUD);
 
 		config = TabbyConfig.builder(modId)
 			.translationId("day-counter")

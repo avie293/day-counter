@@ -22,7 +22,7 @@ public class DayCounterNeoForge {
         // NeoForge mod ids can't contain "-", TabbyLib needs the id of the mod on this loader
         DayCounterClient.init(container.getModId());
 
-        modBus.addListener(RegisterKeyMappingsEvent.class, event -> event.register(KeyBindings.toggleHudKey));
+        modBus.addListener(RegisterKeyMappingsEvent.class, event -> event.register(KeyBindings.TOGGLE_HUD));
         modBus.addListener(RegisterGuiLayersEvent.class, event ->
             event.registerAboveAll(DayCounterClient.id("day_hud"), (graphics, deltaTracker) -> HUD.render(graphics)));
 
