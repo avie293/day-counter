@@ -12,4 +12,6 @@ Day Counter shows how many days have passed in your world directly on screen, so
 
 The settings can be opened with `/dc config` or, on Fabric, through Mod Menu. `/dc help` lists all other commands. Looking for the Day Counter datapack? It has moved to its [own project](https://modrinth.com/datapack/aviesdaycounter-datapack).
 
+Pre 2.0.0 versions: [Avies Archive](https://avie.cc/archive/)
+
 Bugs and crashes can be reported in the [issue tracker](https://github.com/avie293/avie-issues/issues) by selecting **Day Counter** as the project.
